@@ -3,7 +3,9 @@
     <div class="app flex flex-column">
       <the-navigation></the-navigation>
       <div class="app-content flex flex-column">
-        <add-invoice></add-invoice>
+        <transition name="invoice">
+          <add-invoice v-if="invoiceModal"></add-invoice>
+        </transition>
         <router-view />
       </div>
     </div>
@@ -11,12 +13,16 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import TheNavigation from "./components/TheNavigation.vue";
 import AddInvoice from "./components/AddInvoice.vue";
 export default {
   components: {
     TheNavigation,
     AddInvoice,
+  },
+  computed: {
+    ...mapState(["invoiceModal"]),
   },
 };
 </script>
@@ -42,6 +48,18 @@ export default {
     position: relative;
   }
 }
+
+//inovice modal animation
+.invoice-enter-active,
+.invoice-leave-active {
+  transition: 0.6s ease all;
+}
+
+.invoice-enter-from,
+.invoice-leave-to {
+  transform: translateX(-700px);
+}
+
 button,
 .button {
   cursor: pointer;

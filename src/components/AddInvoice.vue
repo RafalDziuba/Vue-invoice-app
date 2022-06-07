@@ -172,16 +172,65 @@
             v-model="productDescription"
           />
         </div>
-        <div class="work-items"></div>
+        <div class="work-items">
+          <h3>Item List</h3>
+          <table class="item-list">
+            <tr class="table-heading flex">
+              <th class="item-name">Item Name</th>
+              <th class="qty">Qty</th>
+              <th class="price">Price</th>
+              <th class="total">Total</th>
+            </tr>
+
+            <tr
+              class="table-items flex"
+              v-for="item in invoiceItemList"
+              :key="item.id"
+            >
+              <td class="item-name">
+                <input type="text" v-model="item.itemName" />
+              </td>
+              <td class="qty"><input type="text" v-model="item.qty" /></td>
+              <td class="price">
+                <input type="text" v-model="item.price" />
+              </td>
+              <td class="total flex">
+                {{ (item.total = item.qty * item.price) }}
+              </td>
+              <img
+                src="@/assets/trash-bin.png"
+                alt="Delete icon"
+                @click="deleteInvoiceItem(item.id)"
+              />
+            </tr>
+          </table>
+          <div @click="addNewInvoiceItem" class="flex button">
+            <img src="@/assets/plus.png" alt="Add new item to invoice" />
+            <p>Add New Item</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="save flex">
+        <div class="left">
+          <button @click.prevent="closeInvoice" class="red">Cancel</button>
+        </div>
+        <div class="right flex">
+          <button @click="saveDraft" class="dark-purple">Save Draft</button>
+          <button @click="publishInvoice" class="purple">Create Invoice</button>
+        </div>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   data() {
     return {
+      dateOptions: { day: "2-digit", month: "short", year: "numeric" },
       billerStreetAddress: null,
       billerCity: null,
       billerZipCode: null,
@@ -204,7 +253,205 @@ export default {
       invoiceTotal: 0,
     };
   },
+  created() {
+    this.invoiceDateUnix = Date.now();
+    this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
+      "en-US",
+      this.dateOptions
+    );
+  },
+  methods: {
+    ...mapMutations(["TOGGLE_INVOICE"]),
+    closeInvoice() {
+      this.TOGGLE_INVOICE();
+    },
+    addNewInvoiceItem() {
+      this.invoiceItemList.push({
+        id: Date.now(),
+        itemName: "",
+        qty: "",
+        price: 0,
+        total: 0,
+      });
+    },
+
+    deleteInvoiceItem(id) {
+      this.invoiceItemList = this.invoiceItemList.filter(
+        (item) => item.id !== id
+      );
+    },
+    // deleteInvoiceItem(item) {
+    //   this.invoiceItemList.splice(this.invoiceItemList.indexOf(item), 1);
+    // },
+  },
+  watch: {
+    paymentTerms() {
+      const paymentDate = new Date();
+      this.paymentDueDateUnix = paymentDate.setDate(
+        paymentDate.getDate() + parseInt(this.paymentTerms)
+      );
+      this.paymentDueDate = new Date(
+        this.paymentDueDateUnix
+      ).toLocaleDateString("en-US", this.dateOptions);
+    },
+  },
 };
 </script>
 
-<style lang="sass" scoped></style>
+<style lang="scss" scoped>
+.invoice-wrap {
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  width: 100%;
+  height: 100vh;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    left: 90px;
+  }
+
+  .invoice-content {
+    position: relative;
+    overflow-y: scroll;
+    padding: 56px;
+    max-width: 700px;
+    width: 100%;
+    background-color: #141625;
+    color: white;
+    box-shadow: 10px 4px 6px -1px rgba(0, 0, 0, 0.2),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    h1 {
+      margin-bottom: 48px;
+      color: white;
+    }
+    h3 {
+      margin-bottom: 60px;
+      font-size: 18px;
+      color: #777f98;
+    }
+
+    h4 {
+      color: #7c5dfa;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+
+    .bill-to,
+    .bill-from {
+      margin-bottom: 48px;
+
+      .location-details {
+        gap: 16px;
+        div {
+          flex: 1;
+        }
+      }
+    }
+
+    .invoice-work {
+      .payment {
+        gap: 24px;
+        div {
+          flex: 1;
+        }
+      }
+
+      .work-items {
+        .item-list {
+          width: 100%;
+
+          .table-heading,
+          .table-items {
+            gap: 16px;
+            font-size: 12px;
+
+            .item-name {
+              flex-basis: 50%;
+            }
+            .qty {
+              flex-basis: 10%;
+            }
+
+            .price {
+              flex-basis: 20%;
+            }
+
+            .total {
+              flex-basis: 20%;
+              align-self: center;
+            }
+          }
+
+          .table-heading {
+            margin-bottom: 16px;
+
+            th {
+              text-align: left;
+            }
+          }
+
+          .table-items {
+            position: relative;
+            margin-bottom: 24px;
+            img {
+              position: absolute;
+              top: 10px;
+              right: 0;
+              cursor: pointer;
+            }
+          }
+        }
+
+        .button {
+          color: white;
+          background-color: #252945;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+
+          img {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+
+    .save {
+      margin-top: 60px;
+
+      fiv {
+        flex: 1;
+      }
+
+      .right {
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  .input {
+    margin-bottom: 24px;
+  }
+
+  label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  input,
+  select {
+    width: 100%;
+    background-color: #1e2139;
+    color: white;
+    border-radius: 4px;
+    padding: 12px 4px;
+    border: none;
+  }
+}
+</style>

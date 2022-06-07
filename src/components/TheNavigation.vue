@@ -12,7 +12,7 @@ export default {};
 
 <style lang="scss" scoped>
 header {
-  z-index: 3;
+  z-index: 4;
   flex-direction: row;
   background-color: #1e2139;
 
