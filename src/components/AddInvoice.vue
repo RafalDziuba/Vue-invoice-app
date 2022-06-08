@@ -280,9 +280,70 @@ export default {
         (item) => item.id !== id
       );
     },
+
+    totalAmount() {
+      this.invoiceTotal = 0;
+      this.invoiceItemList.forEach((item) => {
+        this.invoiceTotal += item.total;
+      });
+    },
     // deleteInvoiceItem(item) {
     //   this.invoiceItemList.splice(this.invoiceItemList.indexOf(item), 1);
     // },
+
+    publishInvoice() {
+      this.invoicePending = true;
+    },
+
+    saveDraft() {
+      this.invoiceDraft = true;
+    },
+
+    async uploadInvoice() {
+      if (this.invoiceItemList.length <= 0) {
+        return; //handle error
+      }
+
+      this.totalAmount();
+      const response = await fetch(
+        "https://invoice-8eca3-default-rtdb.firebaseio.com/invoices.json",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            invoiceId: new Date(),
+            billerStreetAddress: this.billerStreetAddress,
+            billerCity: this.billerCity,
+            billerZipCode: this.billerZipCode,
+            billerCountry: this.billerCountry,
+            clientName: this.clientName,
+            clientEmail: this.clientEmail,
+            clientStreetAddress: this.clientStreetAddress,
+            clientCity: this.clientCity,
+            clientZipCode: this.clientZipCode,
+            clientCountry: this.clientCountry,
+            invoiceDate: this.invoiceDate,
+            invoiceDateUnix: this.invoiceDateUnix,
+            paymentTerms: this.paymentTerms,
+            paymentDueDate: this.paymentDueDate,
+            paymentDueDateUnix: this.paymentDueDateUnix,
+            productDescription: this.productDescription,
+            invoiceItemList: this.invoiceItemList,
+            invoiceTotal: this.invoiceTotal,
+            invoicePending: this.invoicePending,
+            invoiceDraft: this.invoiceDraft,
+            invoicePaid: null,
+          })
+        }
+      );
+      if(!response.ok){
+        //print error message
+      }
+      this.TOGGLE_INVOICE();
+    },
+
+    submitForm() {
+      this.uploadInvoice();
+    },
   },
   watch: {
     paymentTerms() {
