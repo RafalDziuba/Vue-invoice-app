@@ -28,9 +28,11 @@
 </template>
 
 <script>
+
 import { mapMutations } from "vuex";
 export default {
   name: "TheHome",
+
   data() {
     return {
       filterMenu: null,
@@ -72,6 +74,11 @@ export default {
         span {
           font-size: 12px;
         }
+      }
+
+      .button {
+        position: relative;
+        z-index: 9;
       }
 
       .filter {

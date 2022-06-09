@@ -74,7 +74,7 @@
             type="text"
             id="clientEmail"
             name="clientEmail"
-            v-model="clientEmail"
+            v-model.trim="clientEmail"
           />
         </div>
 
@@ -190,9 +190,11 @@
               <td class="item-name">
                 <input type="text" v-model="item.itemName" />
               </td>
-              <td class="qty"><input type="text" v-model="item.qty" /></td>
+              <td class="qty">
+                <input type="number" v-model.number="item.qty" />
+              </td>
               <td class="price">
-                <input type="text" v-model="item.price" />
+                <input type="number" v-model.number="item.price" />
               </td>
               <td class="total flex">
                 {{ (item.total = item.qty * item.price) }}
@@ -221,15 +223,17 @@
         </div>
       </div>
     </form>
+    <loading-spinner v-if="isLoading"></loading-spinner>
   </div>
 </template>
 
 <script>
 import { mapMutations } from "vuex";
-
+import LoadingSpinner from "./LoadingSpinner.vue";
 export default {
   data() {
     return {
+      isLoading: false,
       dateOptions: { day: "2-digit", month: "short", year: "numeric" },
       billerStreetAddress: null,
       billerCity: null,
@@ -252,6 +256,9 @@ export default {
       invoiceItemList: [],
       invoiceTotal: 0,
     };
+  },
+  components: {
+    LoadingSpinner,
   },
   created() {
     this.invoiceDateUnix = Date.now();
@@ -305,6 +312,7 @@ export default {
       }
 
       this.totalAmount();
+      this.isLoading = true;
       const response = await fetch(
         "https://invoice-8eca3-default-rtdb.firebaseio.com/invoices.json",
         {
@@ -332,13 +340,14 @@ export default {
             invoicePending: this.invoicePending,
             invoiceDraft: this.invoiceDraft,
             invoicePaid: null,
-          })
+          }),
         }
       );
-      if(!response.ok){
+      if (!response.ok) {
         //print error message
       }
       this.TOGGLE_INVOICE();
+      this.isLoading = false;
     },
 
     submitForm() {
