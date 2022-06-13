@@ -6,7 +6,9 @@
         <transition name="invoice">
           <add-invoice v-if="invoiceModal"></add-invoice>
         </transition>
-        <router-view />
+        <the-home></the-home>
+        <single-invoice></single-invoice>
+        <!-- <router-view /> -->
       </div>
     </div>
   </div>
@@ -16,10 +18,14 @@
 import { mapState } from "vuex";
 import TheNavigation from "./components/TheNavigation.vue";
 import AddInvoice from "./components/AddInvoice.vue";
+import SingleInvoice from "./components/SingleInvoice.vue";
+import TheHome from './views/TheHome.vue';
 export default {
   components: {
     TheNavigation,
     AddInvoice,
+    TheHome,
+    SingleInvoice,
   },
   computed: {
     ...mapState(["invoiceModal"]),

@@ -215,10 +215,10 @@
 
       <div class="save flex">
         <div class="left">
-          <button @click.prevent="closeInvoice" class="red">Cancel</button>
+          <button type="button" @click="closeInvoice" class="red">Cancel</button>
         </div>
         <div class="right flex">
-          <button @click="saveDraft" class="dark-purple">Save Draft</button>
+          <button type="submit" @click="saveDraft" class="dark-purple">Save Draft</button>
           <button @click="publishInvoice" class="purple">Create Invoice</button>
         </div>
       </div>
@@ -318,7 +318,7 @@ export default {
         {
           method: "POST",
           body: JSON.stringify({
-            invoiceId: new Date(),
+            invoiceId: new Date().toISOString(),
             billerStreetAddress: this.billerStreetAddress,
             billerCity: this.billerCity,
             billerZipCode: this.billerZipCode,
