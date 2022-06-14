@@ -1,17 +1,27 @@
 <template>
   <div class="wrapper">
     <ul>
-      <li>Due date</li>
-      <li class="invoice-name">Full Name</li>
-      <li>Price</li>
-      <li class="invoice-status">Status</li>
-      <a href="#">Details</a>
+      <li>Due: {{ dueDate }}</li>
+      <li class="invoice-name">{{ fullName }}</li>
+      <li>{{ price }}zł</li>
+      <li :class="['invoice-status', InvStatus ? 'pending' : 'paid']">
+        {{ InvStatus ? "Pending" : "Paid" }}
+      </li>
+      <a href="#"><img src="@/assets/viewDetails.png" alt=""></a>
     </ul>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["fullName", "price", "InvStatus", "dueDate", "invoiceId"],
+
+  computed: {
+    setStatus() {
+      return this.InvStatus ? "Pending" : "Paid";
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -44,16 +54,24 @@ export default {};
     }
 
     .invoice-name {
-        text-transform: uppercase;
+      text-transform: uppercase;
     }
 
     .invoice-status {
-        padding: 5px 15px;
-        border-radius: 15px;
+      padding: 5px 15px;
+      border-radius: 15px;
+    }
+
+    .pending {
+      background-color: rgba(245, 176, 47, 0.704);
+    }
+
+    .paid {
+      background-color: rgba(82, 223, 66, 0.545);
     }
   }
   ul:hover {
-    background: rgba(255, 255, 255, 0.488);
+    background: rgba(255, 255, 255, 0.264);
   }
 }
 </style>

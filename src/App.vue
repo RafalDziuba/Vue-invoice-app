@@ -7,7 +7,15 @@
           <add-invoice v-if="invoiceModal"></add-invoice>
         </transition>
         <the-home></the-home>
-        <single-invoice></single-invoice>
+        <single-invoice
+          v-for="invoice in invoices"
+          :key="invoice.id"
+          :invoiceId="invoice.invoiceId"
+          :fullName="invoice.fullName"
+          :price="invoice.totalPrice"
+          :InvStatus="invoice.status"
+          :dueDate="invoice.dueDate"
+        ></single-invoice>
         <!-- <router-view /> -->
       </div>
     </div>
@@ -19,7 +27,7 @@ import { mapState } from "vuex";
 import TheNavigation from "./components/TheNavigation.vue";
 import AddInvoice from "./components/AddInvoice.vue";
 import SingleInvoice from "./components/SingleInvoice.vue";
-import TheHome from './views/TheHome.vue';
+import TheHome from "./views/TheHome.vue";
 export default {
   components: {
     TheNavigation,
@@ -29,6 +37,12 @@ export default {
   },
   computed: {
     ...mapState(["invoiceModal"]),
+    invoices() {
+      return this.$store.getters.invoices;
+    },
+  },
+  created() {
+    this.$store.dispatch("loadInvoices");
   },
 };
 </script>
