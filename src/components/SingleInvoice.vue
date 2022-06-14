@@ -1,13 +1,13 @@
 <template>
   <div class="wrapper">
     <ul>
-      <li>Due: {{ dueDate }}</li>
-      <li class="invoice-name">{{ fullName }}</li>
-      <li>{{ price }}zł</li>
+      <li class="default-width">Due: {{ dueDate }}</li>
+      <li class="invoice-name default-width">{{ fullName }}</li>
+      <li class="default-width price-item">{{ price }}zł</li>
       <li :class="['invoice-status', InvStatus ? 'pending' : 'paid']">
-        {{ InvStatus ? "Pending" : "Paid" }}
+        {{ setStatus }}
       </li>
-      <a href="#"><img src="@/assets/viewDetails.png" alt=""></a>
+      <a href="#"><img src="@/assets/viewDetails.png" alt="" /></a>
     </ul>
   </div>
 </template>
@@ -27,6 +27,7 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   margin: 0 auto;
+  margin-bottom: 30px;
   width: 825px;
   height: 100px;
   background: rgba(255, 255, 255, 0.117);
@@ -64,10 +65,19 @@ export default {
 
     .pending {
       background-color: rgba(245, 176, 47, 0.704);
+      box-shadow: 0px 0px 23px -5px rgba(245, 176, 47, 0.704);
     }
 
     .paid {
       background-color: rgba(82, 223, 66, 0.545);
+      box-shadow: 0px 0px 23px -5px rgba(82, 223, 66, 0.545);
+    }
+
+    .default-width {
+      width: 160px;
+    }
+    .price-item {
+      width: 100px;
     }
   }
   ul:hover {
