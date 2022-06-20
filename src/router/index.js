@@ -7,6 +7,10 @@ const routes = [
     name: "TheHome",
     component: TheHome,
   },
+  {
+    path: "/invoice/:invoiceId",
+    component: InvoiceDetails,
+  },
 ];
 
 const router = createRouter({

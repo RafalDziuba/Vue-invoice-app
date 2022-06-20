@@ -1,4 +1,5 @@
 <template>
+<router-link to="/">
   <div class="wrapper">
     <ul>
       <li class="default-width">Due: {{ dueDate }}</li>
@@ -10,6 +11,7 @@
       <a href="#"><img src="@/assets/viewDetails.png" alt="" /></a>
     </ul>
   </div>
+</router-link>
 </template>
 
 <script>
