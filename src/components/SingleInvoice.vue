@@ -1,17 +1,21 @@
 <template>
-<router-link to="/">
-  <div class="wrapper">
-    <ul>
-      <li class="default-width">Due: {{ dueDate }}</li>
-      <li class="invoice-name default-width">{{ fullName }}</li>
-      <li class="default-width price-item">{{ price }}zł</li>
-      <li :class="['invoice-status', InvStatus ? 'pending' : 'paid']">
-        {{ setStatus }}
-      </li>
-      <a href="#"><img src="@/assets/viewDetails.png" alt="" /></a>
-    </ul>
-  </div>
-</router-link>
+  <router-link
+    :to="{ name: 'InvoiceDetails' , params: { invoiceId: invoiceId }}"
+  >
+    <div class="wrapper">
+      <ul>
+        <li class="default-width">Due: {{ dueDate }}</li>
+        <li class="invoice-name default-width">{{ fullName }}</li>
+        <li class="default-width price-item">{{ price }}zł</li>
+        <li :class="['invoice-status', InvStatus ? 'pending' : 'paid']">
+          {{ setStatus }}
+        </li>
+        <a href="#"
+          ><img src="@/assets/viewDetails.png" alt="View details icon"
+        /></a>
+      </ul>
+    </div>
+  </router-link>
 </template>
 
 <script>
